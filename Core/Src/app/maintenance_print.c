@@ -12,7 +12,7 @@ void Maintenance_Print(void)
 
   if (Rtc_Get(&dt)) snprintf(clk, sizeof(clk), "%02d:%02d:%02d", (int)dt.hour, (int)dt.min, (int)dt.sec);
 
-  if (!(USE_TEMP_HUM && tog.temp)) { strcpy(ts, "OFF"); strcpy(hs, "OFF"); }
+  if (!USE_TEMP_HUM) { strcpy(ts, "OFF"); strcpy(hs, "OFF"); }
   else if ((dr = DHT11_Read(&t, &h)) != 1)
   {
     snprintf(ts, sizeof(ts), "NA (err %d)", (int)dr);   /* -1 = no answer: check PB0 (A3), VCC, GND */
@@ -25,7 +25,7 @@ void Maintenance_Print(void)
     snprintf(hl, sizeof(hl), "%d%%", (int)h);
   }
 
-  if (!(USE_LIGHT && tog.light)) strcpy(ls, "OFF");
+  if (!USE_LIGHT) strcpy(ls, "OFF");
   else if (BH1750_ReadLux(&lx))
   {
     snprintf(ls, sizeof(ls), "%lu lx", (unsigned long)(lx / 100U));
@@ -42,5 +42,10 @@ void Maintenance_Print(void)
   printf("[MAINT %s] Temp=%s | Hum=%s | Lum=%s | Press=NA | GPS=%s\r\n", clk, ts, hs, ls, gs);
 
   snprintf(lcd_s, sizeof(lcd_s), "%s %s L%s", tl, hl, ll);
-  snprintf(lcd_vals, sizeof(lcd_vals), "%.16s", lcd_s);      /* shown by Lcd_Refresh */
+  snprintf(lcd_vals, sizeof(lcd_vals), "%.16s", lcd_s);
+  Lcd_Refresh(true);                             /* LCD shows the new reading right away */
+  {
+    static uint8_t n = 0U;
+    if (++n >= 15U) { n = 0U; Ram_Print(); }     /* RAM use every 30 s */
+  }
 }

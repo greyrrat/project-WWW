@@ -14,7 +14,7 @@ extern "C" {
 #include <stddef.h>
 
 /* ============================== SETTINGS ============================== */
-#define FW_VERSION               "1.0.0"
+#define FW_VERSION               "1.2.0"
 #define LOT_NUMBER               "LOT-2026-001"
 
 #define DEBUG_PRINT              1   /* 1 = print debug lines on the serial port            */
@@ -51,19 +51,25 @@ extern "C" {
 #define LED_B_PIN        GPIO_PIN_0
 
 #define CONFIG_MAGIC       0x57575732UL
-#define FLASH_CONFIG_ADDR  0x080FF800UL      /* last 2 KB page of the 1 MB flash */
+#define FLASH_CONFIG_ADDR  0x080FF800UL      /* bank 2 page 255: settings            */
+#define FLASH_TIME_ADDR    0x080FF000UL      /* bank 2 page 254: last known date/time */
+#define TIME_REC_COUNT     256U
+#define TIME_REC_TAG       0xA5U
+#define TIME_SAVE_MS       (5UL * 60UL * 1000UL)   /* date/time saved to flash every 5 min */
+#define TIMEZONE_HOURS     1                 /* GPS gives UTC: Algeria / Lagos = UTC+1 */
 
-#define RX_MAX             96U
+#define RX_MAX             64U
 #define GPS_LINE_MAX       100U
 #define GPS_BAUD           9600U   /* NEO-6M / NEO-7M / NEO-M8N default */
 #define LOG_LINE_MAX       180U
-#define LOG_QUEUE_LEN      8U
+#define LOG_QUEUE_LEN      4U
+#define RAM_FILL           0xA5A5A5A5UL  /* pattern used to measure the stack */
 
 #define SD_SPI_SLOW        SPI_BAUDRATEPRESCALER_256  /* 312 kHz: the card must start below 400 kHz */
 #define SD_SPI_FAST        SPI_BAUDRATEPRESCALER_32   /* 2.5 MHz after start-up (safe with jumper wires) */
 #define SD_RETRY_MS        15000U   /* lines waiting in the queue: new SD try every 15 s       */
 #define LCD_REFRESH_MS     1000U    /* LCD redrawn every second                                 */
-#define LCD_LIVE_MS        5000U    /* STANDARD/ECONOMY: sensors read for the LCD every 5 s     */
+#define LCD_LIVE_MS        3000U    /* STANDARD/ECONOMY: sensors read for LCD + serial every 3 s */
 
 /* Events handled by App_Task() */
 #define EVT_RED_SHORT    (1UL << 0)
@@ -133,7 +139,7 @@ typedef struct { const char *name; uint16_t off; int32_t min; int32_t max; } Par
 typedef struct { char tag[12]; char text[LOG_LINE_MAX]; } LogEntry_t;
 
 /* Test switches, changed at run time with USE_xxx=0/1 (RAM only, back to features.h after a reset) */
-typedef struct { bool led, sd, light, temp, lcd; } Toggles_t;
+
 
 typedef struct {
   bool     active;
@@ -197,9 +203,11 @@ extern uint8_t sd_fail_step;
 extern LogEntry_t log_q[LOG_QUEUE_LEN];
 extern uint8_t q_head, q_count;
 extern uint32_t next_sd_retry_ms;
+extern char sd_day_dir[16];
 extern char gps_gga[GPS_LINE_MAX];          /* last $GPGGA / $GNGGA sentence received */
+extern char gps_rmc[GPS_LINE_MAX];          /* last $GPRMC / $GNRMC (date + time)      */
+extern volatile uint32_t gps_rmc_ms;
 extern volatile uint32_t gps_last_ms;       /* time of the last sentence (0 = never)   */
-extern Toggles_t tog;
 extern char lcd_vals[17];          /* last readings shown on LCD line 2 */
 
 extern Button_t btn_red;
@@ -266,6 +274,10 @@ bool     Rtc_SetDate(uint8_t y, uint8_t mo, uint8_t d);
 bool     Rtc_SetWeekday(uint8_t wd);
 bool     Rtc_Get(DateTime_t *d);
 bool     Rtc_Setup(void);
+bool     Rtc_SetAll(const DateTime_t *d);
+int16_t  Rtc_LastRec(void);
+void     Rtc_Save(bool force);
+bool     Rtc_Restore(void);
 
 /* Sensors */
 int8_t   Dht_Exchange(uint8_t d[5]);
@@ -275,7 +287,10 @@ uint8_t  BH1750_ReadLux(uint32_t *lux_x100);
 uint16_t Lux_Scale(uint32_t lux);
 void     Gps_Init(void);
 bool     Gps_ParseCoord(const char *s, char hemi, char *out, size_t n);
-int8_t   GPS_Read(char *out, size_t n);   /* 1 = position, 0 = no fix yet, -1 = GPS not answering */
+int8_t   GPS_Read(char *out, size_t n);
+uint8_t  Gps_Split(const char *src, char *g, char **f, uint8_t max);
+bool     Gps_Time(DateTime_t *d);
+void     Gps_SyncClock(uint32_t now);   /* 1 = position, 0 = no fix yet, -1 = GPS not answering */
 #if HAVE_PRESSURE
 bool     Pressure_Read(int32_t *hpa);
 #endif
@@ -296,6 +311,7 @@ bool     SD_Mount(void);
 void     SD_Unmount(void);
 void     SD_Fail(uint32_t flag);
 void     SD_Rotate(const char *tag, const char *path0);
+bool     SD_MakeDirs(const char *tag);
 bool     SD_AppendEntry(const LogEntry_t *e);
 void     Q_Push(const char *tag, const char *text);
 void     SD_Flush(void);
@@ -319,8 +335,6 @@ uint8_t  DaysInMonth(long y, long m);
 void     Cli_Reply(bool ok);
 void     Cli_PrintParams(void);
 void     Cli_Execute(char *line);
-bool     Cli_Test(char *line);
-void     Tog_Print(void);
 
 /* Modes / task */
 void     Mode_Set(SystemMode_t m);
@@ -330,9 +344,8 @@ void     App_Task(void);
 void     App_Tick1ms(void);
 void     Tick_Init(void);
 void     App_Init(void);
-void     Reset_CausePrint(void);
-void     Watchdog_Init(void);
-static inline void Watchdog_Kick(void) { IWDG->KR = 0xAAAAU; }
+void     Ram_Fill(void);
+void     Ram_Print(void);
 
 /* Interrupt handlers */
 void     EXTI0_IRQHandler(void);

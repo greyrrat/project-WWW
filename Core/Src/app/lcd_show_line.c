@@ -6,7 +6,7 @@ void Lcd_ShowLine(uint8_t row, const char *text)
 {
 #if USE_LCD
   char buf[17];
-  if (!lcd_ready || !tog.lcd) return;
+  if (!lcd_ready) return;
   snprintf(buf, sizeof(buf), "%-16.16s", text);
   Lcd_SetCursor(0, row);
   Lcd_Print(buf);

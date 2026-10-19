@@ -7,7 +7,6 @@ void SD_LogLine(const char *tag, const char *text)
   (void)tag; (void)text;
   return;                                        /* SD disabled in features.h */
 #endif
-  if (!tog.sd) return;                           /* SD switched off with USE_SD=0 */
   if (app_mode == MODE_MAINTENANCE) return;      /* the card must stay untouched in maintenance */
   Q_Push(tag, text);
   SD_Flush();

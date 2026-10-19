@@ -38,9 +38,10 @@ uint8_t sd_fail_step = 0U;
 LogEntry_t log_q[LOG_QUEUE_LEN];
 uint8_t q_head = 0U, q_count = 0U;
 uint32_t next_sd_retry_ms = 0U;
-Toggles_t tog = { USE_LED != 0, USE_SD != 0, USE_LIGHT != 0, USE_TEMP_HUM != 0, USE_LCD != 0 };
 char lcd_vals[17] = "";
 char gps_gga[GPS_LINE_MAX];
+char gps_rmc[GPS_LINE_MAX];
+volatile uint32_t gps_rmc_ms = 0U;
 volatile uint32_t gps_last_ms = 0U;
 
 Button_t btn_red   = { BTN_RED_PORT,   BTN_RED_PIN,   0U, 0U, 0U, 1U, 0U, EVT_RED_SHORT,   EVT_RED_LONG   };

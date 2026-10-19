@@ -1,6 +1,6 @@
 #include "app.h"
 
-/* GPS bytes arrive here one by one. Only the GGA sentence (position) is kept. */
+/* GPS bytes arrive here one by one. GGA (position) and RMC (date/time) are kept. */
 void USART1_IRQHandler(void)
 {
   static char line[GPS_LINE_MAX];
@@ -17,11 +17,9 @@ void USART1_IRQHandler(void)
     if (c == '\r' || c == '\n')
     {
       if (len > 6U) gps_last_ms = HAL_GetTick();                    /* the GPS is talking */
-      if (len > 6U && line[3] == 'G' && line[4] == 'G' && line[5] == 'A')
-      {
-        line[len] = '\0';
-        memcpy(gps_gga, line, (size_t)len + 1U);
-      }
+      line[len] = '\0';
+      if (len > 6U && line[3] == 'G' && line[4] == 'G' && line[5] == 'A') memcpy(gps_gga, line, (size_t)len + 1U);
+      if (len > 6U && line[3] == 'R' && line[4] == 'M' && line[5] == 'C') { memcpy(gps_rmc, line, (size_t)len + 1U); gps_rmc_ms = HAL_GetTick(); }
       len = 0U;
     }
     else if (len < GPS_LINE_MAX - 1U) line[len++] = c;

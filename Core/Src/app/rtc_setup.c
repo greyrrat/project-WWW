@@ -10,6 +10,14 @@ bool Rtc_Setup(void)
   __HAL_RCC_PWR_CLK_ENABLE();
   HAL_PWR_EnableBkUpAccess();
 
+  /* Already running and set (RESET button, flashing): touch nothing, or the time would be lost */
+  if ((RCC->BDCR & RCC_BDCR_RTCEN) && (RTC->ISR & RTC_ISR_INITS))
+  {
+    if (!Rtc_WaitSync()) return false;
+    rtc_ok = true;
+    return true;
+  }
+
   memset(&osc, 0, sizeof(osc));
   osc.OscillatorType = RCC_OSCILLATORTYPE_LSE;
   osc.LSEState = RCC_LSE_ON;

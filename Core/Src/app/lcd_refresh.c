@@ -20,7 +20,6 @@ void Lcd_Refresh(bool force)
   DateTime_t dt;
   uint32_t now = HAL_GetTick();
 
-  if (!tog.lcd) return;
   if (!force && (int32_t)(now - next_ms) < 0) return;
   next_ms = now + LCD_REFRESH_MS;
 
@@ -31,9 +30,9 @@ void Lcd_Refresh(bool force)
     lcd_ready = Lcd_Init();
     if (!lcd_ready) return;
     DBG("[LCD] retrouve a 0x%02X\r\n", (unsigned)lcd_addr);
-    force = true;
+    memset(shown, 0, sizeof(shown));
   }
-  if (force || (int32_t)(now - next_full_ms) >= 0)
+  if ((int32_t)(now - next_full_ms) >= 0)           /* force = redraw now (changed lines only) */
   {
     next_full_ms = now + 30000U;
     memset(shown, 0, sizeof(shown));             /* forget what is on screen: rewrite both lines */

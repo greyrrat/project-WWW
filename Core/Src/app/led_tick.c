@@ -15,7 +15,6 @@ void Led_Tick(uint32_t now)
   Led_Show(C_OFF);                 /* LED disabled in features.h */
   return;
 #endif
-  if (!tog.led) { Led_Show(C_OFF); return; }     /* switched off with USE_LED=0 */
 
   if      (f & ERR_RTC)       c = (ph < 500U) ? C_RED : C_BLUE;
   else if (f & ERR_GPS)       c = (ph < 500U) ? C_RED : C_YELLOW;

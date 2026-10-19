@@ -5,6 +5,7 @@ void App_Init(void)
 {
   uint32_t now;
 
+  Ram_Fill();                                    /* first: lets Ram_Print measure the stack */
   DWT_Init();
 
   USER_Driver.disk_initialize = SD_Disk_Init;
@@ -16,21 +17,18 @@ void App_Init(void)
   printf("\r\n=== Worldwide Weather Watcher v%s ===\r\n", FW_VERSION);
   printf("[INFO] CPU %lu Hz\r\n", (unsigned long)SystemCoreClock);
 
-  Reset_CausePrint();
   printf("[FEATURES] LED=%d SD=%d LIGHT=%d TEMP_HUM=%d LCD=%d GPS=%d | CONFIG=%d MAINT=%d ECO=%d\r\n",
          USE_LED, USE_SD, USE_LIGHT, USE_TEMP_HUM, USE_LCD, USE_GPS, USE_MODE_CONFIG, USE_MODE_MAINT, USE_MODE_ECO);
 
   Config_Load();
 
-#if I2C_SCAN_AT_BOOT
+#if I2C_SCAN_AT_BOOT && (USE_LIGHT || USE_LCD)  /* nothing to scan if no I2C device is used */
   I2c_Scan();
 #endif
 
 #if USE_LIGHT
   if (BH1750_Init()) DBG("[BH1750] OK\r\n");
   else               DBG("[BH1750] non detecte (verifier PB8/PB9)\r\n");
-#else
-  DBG("[BH1750] desactive (USE_LIGHT = 0)\r\n");
 #endif
 
 #if USE_LCD
@@ -47,8 +45,14 @@ void App_Init(void)
 
   if (Rtc_Setup())
   {
-    DBG("[RTC] Horloge OK\r\n");
-    if ((RTC->ISR & RTC_ISR_INITS) == 0U) DBG("[RTC] Heure non reglee : utiliser CLOCK= et DATE= en mode configuration\r\n");
+    DateTime_t dt;
+    if ((RTC->ISR & RTC_ISR_INITS) == 0U)
+    {
+      if (Rtc_Restore()) DBG("[RTC] Coupure de courant : heure restauree depuis la Flash (en retard : CLOCK= ou GPS)\r\n");
+      else               DBG("[RTC] Heure non reglee : utiliser CLOCK= et DATE= en mode configuration\r\n");
+    }
+    if (Rtc_Get(&dt)) DBG("[RTC] 20%02u-%02u-%02u %02u:%02u:%02u\r\n", (unsigned)dt.year, (unsigned)dt.month,
+                          (unsigned)dt.day, (unsigned)dt.hour, (unsigned)dt.min, (unsigned)dt.sec);
   }
   else
   {
@@ -65,7 +69,7 @@ void App_Init(void)
     app_mode = MODE_CONFIG;
     config_activity_ms = now;
     printf("[MODE] CONFIGURATION\r\n");
-    printf("[CONFIG] Commandes : VERSION, PARAMS, RESET, CLOCK=HH:MM:SS, DATE=MM,DD,YYYY, DAY=MON, LOG_INTERVAL=...\r\n");
+    printf("[CONFIG] Commandes : VERSION, PARAMS, RESET, CLOCK=HH:MM:SS, DATE=MM,DD,YYYY, DAY=MON, RAM, LOG_INTERVAL=...\r\n");
   }
   else
   {
@@ -79,7 +83,7 @@ void App_Init(void)
   DBG("[GPS] USART1 9600 bauds : GPS TX -> PA10 (D2), GPS RX -> PA9 (D8)\r\n");
 #endif
 
-#if SD_TEST_AT_BOOT
+#if SD_TEST_AT_BOOT && USE_SD
   (void)SD_SelfTest();                           /* press RESET to test again */
 #endif
 
@@ -93,7 +97,5 @@ void App_Init(void)
   SCB->SCR |= SCB_SCR_SLEEPONEXIT_Msk;           /* empty main loop: the CPU sleeps after every interrupt */
 #endif
   Tick_Init();
-#if USE_WATCHDOG
-  Watchdog_Init();
-#endif
+  Ram_Print();
 }

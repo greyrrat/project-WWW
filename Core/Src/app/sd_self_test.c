@@ -11,7 +11,6 @@ bool SD_SelfTest(void)
   int len;
   uint32_t t0 = HAL_GetTick();
 
-  if (!tog.sd) { printf("[SDTEST] ERROR: USE_SD=0\r\n"); return false; }
 
   SD_Unmount();                                  /* full restart of the card, like at power-up */
   if (!SD_Mount())
