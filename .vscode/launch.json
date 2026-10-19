@@ -1,0 +1,20 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "STM32 Flash & Debug (ST-Link)",
+            "type": "cortex-debug",
+            "request": "launch",
+            "servertype": "openocd",
+            "executable": "${workspaceFolder}/build/Debug/2ndtry.elf",
+            "interface": "swd",
+            "device": "STM32L476RG",
+            "configFiles": [
+                "interface/stlink.cfg",
+                "target/stm32l4x.cfg"
+            ],
+            "runToEntryPoint": "main",
+            "preLaunchTask": "CMake: build"
+        }
+    ]
+}

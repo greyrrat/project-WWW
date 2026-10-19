@@ -1,0 +1,4 @@
+C:/Users/PC/Documents/stm32/2ndtry/Drivers/CMSIS/Include/core_cm4.h:1755:22:__NVIC_SetPendingIRQ	16	static
+C:/Users/PC/Documents/stm32/2ndtry/Core/Inc/app.h:212:20:App_Wake	8	static
+C:/Users/PC/Documents/stm32/2ndtry/Core/Inc/app.h:217:20:Evt_Set	16	static
+C:/Users/PC/Documents/stm32/2ndtry/Core/Src/app/app_tick_1ms.c:4:6:App_Tick1ms	16	static

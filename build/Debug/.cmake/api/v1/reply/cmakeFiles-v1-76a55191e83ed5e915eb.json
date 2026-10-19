@@ -1,0 +1,276 @@
+{
+	"globsDependent" : 
+	[
+		{
+			"expression" : "C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/*.c",
+			"paths" : 
+			[
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/app_globals.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/app_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/app_task.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/app_tick_1ms.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/bcd2bin.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/bh1750_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/bh1750_read_lux.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/bin2bcd.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/button_edge.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/button_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/button_tick.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/ci_eq.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/cli_execute.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/cli_print_params.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/cli_reply.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/cli_test.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_checksum.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_defaults.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_load.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_pairs_ok.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_ranges_ok.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/config_save.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/days_in_month.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/dht11_read.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/dht_exchange.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/dwt_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/exti0_irq_handler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/gps_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/gps_parse_coord.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/gps_read.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/hal_gpio_exti_callback.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/hal_gpio_exti_falling_callback.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/hal_gpio_exti_rising_callback.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/hal_uart_error_callback.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/hal_uart_rx_cplt_callback.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/i2c_scan.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/interval_ms.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/io_putchar.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_clear.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_expander.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_print.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_refresh.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_set_cursor.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_show_line.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lcd_write_byte.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/led_show.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/led_tick.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/lux_scale.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/maintenance_print.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/measure_finish.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/measure_start.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/measure_step.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/mode_on_green_long.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/mode_on_red_long.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/mode_set.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/parse_long.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/parse_num.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/parse_sep.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/pressure_read.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/q_push.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_get.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_set_date.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_set_time.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_set_weekday.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_setup.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_wait_sync.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/rtc_write.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_append_entry.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_cmd.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_deselect.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_disk_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_disk_ioctl.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_disk_read.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_disk_status.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_disk_write.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_fail.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_flush.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_log_line.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_mount.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_rotate.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_select.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_self_test.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_unmount.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/sd_wait_ready.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/spi_rw.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/spi_set_prescaler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/swpmi1_irq_handler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/tick_init.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/tim6_dac_irq_handler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/tog_print.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/trim.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/usart1_irq_handler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/usart2_irq_handler.c",
+				"C:/Users/PC/Documents/stm32/2ndtry/cmake/stm32cubemx/../../Core/Src/app/weekday.c"
+			],
+			"recurse" : true
+		}
+	],
+	"inputs" : 
+	[
+		{
+			"path" : "CMakeLists.txt"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/Debug/CMakeFiles/4.4.3/CMakeSystem.cmake"
+		},
+		{
+			"path" : "cmake/gcc-arm-none-eabi.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeSystemSpecificInitialize.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/Debug/CMakeFiles/4.4.3/CMakeCCompiler.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/Debug/CMakeFiles/4.4.3/CMakeCXXCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeSystemSpecificInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeGenericSystem.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeInitializeConfigs.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU-C.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/CMakeCommonCompilerMacros.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Internal/CMakeCLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Internal/CMakeCommonLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCXXInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeLanguageInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU-CXX.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Platform/Generic.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeCommonLanguageInclude.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Internal/CMakeCXXLinkerInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Internal/CMakeCommonLinkerInformation.cmake"
+		},
+		{
+			"isGenerated" : true,
+			"path" : "build/Debug/CMakeFiles/4.4.3/CMakeASMCompiler.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/CMakeASMInformation.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU-ASM.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Compiler/GNU.cmake"
+		},
+		{
+			"isCMake" : true,
+			"isExternal" : true,
+			"path" : "C:/Program Files/CMake/share/cmake-4.4/Modules/Internal/CMakeASMLinkerInformation.cmake"
+		},
+		{
+			"path" : "cmake/stm32cubemx/CMakeLists.txt"
+		}
+	],
+	"kind" : "cmakeFiles",
+	"paths" : 
+	{
+		"build" : "C:/Users/PC/Documents/stm32/2ndtry/build/Debug",
+		"source" : "C:/Users/PC/Documents/stm32/2ndtry"
+	},
+	"version" : 
+	{
+		"major" : 1,
+		"minor" : 1
+	}
+}
