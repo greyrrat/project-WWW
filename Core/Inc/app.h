@@ -12,9 +12,10 @@ extern "C" {
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stddef.h>
+#include "features.h"            /* ON/OFF switches and LED pins */
 
 /* ============================== SETTINGS ============================== */
-#define FW_VERSION               "1.0.0"
+#define FW_VERSION               "2.0.0"
 #define LOT_NUMBER               "LOT-2026-001"
 
 #define DEBUG_PRINT              1   /* 1 = print debug lines on the serial port            */
@@ -22,15 +23,12 @@ extern "C" {
                                      /* 0 = main loop calls App_Task() itself                */
 #define QUICK_LOG_BUTTON         1   /* 1 = short press on RED logs a measurement right away */
 #define ECONOMY_RED_TO_STANDARD  1   /* 1 = RED 5 s in ECONOMY -> STANDARD, 0 -> MAINTENANCE */
-#define HAVE_GPS                 0   /* GPS not built yet: stays "NA" in the log             */
 #define HAVE_PRESSURE            0   /* pressure sensor not built yet                        */
 
 #define DEBOUNCE_MS              30U
 #define LONG_PRESS_MS            5000U
 #define CONFIG_TIMEOUT_MS        (30UL * 60UL * 1000UL)
 #define LED_ORANGE_GREEN_ON      2U  /* orange = red + green on 2 ticks out of 5             */
-#define LED_LEVEL_ON             GPIO_PIN_RESET /* swap both if your LED is common-anode    */
-#define LED_LEVEL_OFF            GPIO_PIN_SET 
 
 #if DEBUG_PRINT
 #define DBG(...)  printf(__VA_ARGS__)
@@ -44,19 +42,38 @@ extern "C" {
 #define BTN_GREEN_PORT   GPIOC
 #define BTN_GREEN_PIN    GPIO_PIN_13    /* blue button of the board    */
 
-#define LED_R_PORT       GPIOA
-#define LED_R_PIN        GPIO_PIN_4
+#define LED_R_PORT       GPIOA          /* pins chosen in features.h */
 #define LED_G_PORT       GPIOA
-#define LED_G_PIN        GPIO_PIN_1
 #define LED_B_PORT       GPIOA
-#define LED_B_PIN        GPIO_PIN_0
+#if LED_COMMON_ANODE
+#define LED_LEVEL_ON     GPIO_PIN_RESET
+#define LED_LEVEL_OFF    GPIO_PIN_SET
+#else
+#define LED_LEVEL_ON     GPIO_PIN_SET
+#define LED_LEVEL_OFF    GPIO_PIN_RESET
+#endif
 
 #define CONFIG_MAGIC       0x57575732UL
-#define FLASH_CONFIG_ADDR  0x080FF800UL      /* last 2 KB page of the 1 MB flash */
+#define FLASH_CONFIG_ADDR  0x080FF800UL      /* bank 2 page 255: settings            */
+#define FLASH_TIME_ADDR    0x080FF000UL      /* bank 2 page 254: last known date/time */
+#define TIME_REC_COUNT     256U
+#define TIME_REC_TAG       0xA5U
+#define TIME_SAVE_MS       (5UL * 60UL * 1000UL)   /* date/time saved to flash every 5 min */
+#define TIMEZONE_HOURS     1                 /* GPS gives UTC: Algeria / Lagos = UTC+1 */
 
-#define RX_MAX             96U
-#define LOG_LINE_MAX       120U
-#define LOG_QUEUE_LEN      8U
+#define RX_MAX             64U
+#define GPS_LINE_MAX       100U
+#define GPS_BAUD           9600U   /* NEO-6M / NEO-7M / NEO-M8N default */
+#define LOG_LINE_MAX       180U
+#define LOG_QUEUE_LEN      4U
+#define RAM_FILL           0xA5A5A5A5UL  /* pattern used to measure the stack */
+
+#define SD_SPI_SLOW        SPI_BAUDRATEPRESCALER_256  /* 312 kHz: the card must start below 400 kHz */
+#define SD_SPI_FAST        SPI_BAUDRATEPRESCALER_32   /* 2.5 MHz after start-up (safe with jumper wires) */
+#define SD_RETRY_MS        15000U   /* lines waiting in the queue: new SD try every 15 s       */
+#define LCD_REFRESH_MS     1000U    /* LCD redrawn every second                                 */
+#define READ_PERIOD_MS     2000U    /* sensors read + printed every 2 s (DHT11 minimum)         */
+#define FIRST_LOG_MS       5000U    /* first SD line 5 s after start-up, then every LOG_INTERVAL */
 
 /* Events handled by App_Task() */
 #define EVT_RED_SHORT    (1UL << 0)
@@ -87,6 +104,7 @@ enum { C_OFF = 0, C_RED = 1, C_GREEN = 2, C_YELLOW = 3, C_BLUE = 4, C_WHITE = 7,
 /* ---- SD card commands ---- */
 #define SD_CMD0    (0)
 #define SD_CMD8    (8)
+#define SD_CMD13   (13)
 #define SD_CMD16   (16)
 #define SD_CMD17   (17)
 #define SD_CMD24   (24)
@@ -122,17 +140,18 @@ typedef struct { uint8_t year, month, day, weekday, hour, min, sec; } DateTime_t
 
 typedef struct { const char *name; uint16_t off; int32_t min; int32_t max; } Param_t;
 
-typedef struct { char tag[8]; char text[LOG_LINE_MAX]; } LogEntry_t;
+typedef struct { char tag[12]; char text[LOG_LINE_MAX]; } LogEntry_t;
 
-typedef struct {
-  bool     active;
-  uint8_t  dht_state;      /* 0 pending, 1 ok, 2 timeout, 3 disabled */
-  uint8_t  lux_state;
-  uint32_t start_ms;
-  uint32_t next_try_ms;
-  int16_t  t, h;
-  uint32_t lux_x100;
-} Meas_t;
+/* Test switches, changed at run time with USE_xxx=0/1 (RAM only, back to features.h after a reset) */
+
+
+typedef struct {                 /* latest readings, updated every READ_PERIOD_MS */
+  int16_t  t, h;                 /* DHT11 temperature (C) and humidity (%) */
+  uint32_t lux_x100;             /* BH1750 */
+  uint32_t th_ms, lux_ms;        /* time of the last GOOD reading (0 = never) */
+  int8_t   th_err;               /* last DHT11 result: 1 = ok, < 0 = error code */
+  bool     lux_ok;               /* last BH1750 read worked */
+} Reading_t;
 
 typedef struct {
   GPIO_TypeDef *port;
@@ -164,12 +183,11 @@ extern bool rtc_ok;
 extern uint32_t pwm_phase;
 extern uint32_t tick_div;
 
-extern uint32_t next_measure_ms;
-extern uint32_t next_maint_ms;
+extern uint32_t next_log_ms;
 extern uint32_t config_activity_ms;
 extern uint8_t dht_fail;
 extern uint8_t lux_fail;
-extern Meas_t meas;
+extern Reading_t rd;
 
 extern uint8_t rx_byte;
 extern char rx_line[RX_MAX];
@@ -185,6 +203,13 @@ extern bool sd_mounted;
 extern uint8_t sd_fail_step;
 extern LogEntry_t log_q[LOG_QUEUE_LEN];
 extern uint8_t q_head, q_count;
+extern uint32_t next_sd_retry_ms;
+extern char sd_day_dir[16];
+extern char gps_gga[GPS_LINE_MAX];          /* last $GPGGA / $GNGGA sentence received */
+extern char gps_rmc[GPS_LINE_MAX];          /* last $GPRMC / $GNRMC (date + time)      */
+extern volatile uint32_t gps_rmc_ms;
+extern volatile uint32_t gps_last_ms;       /* time of the last sentence (0 = never)   */
+extern char lcd_vals[17];          /* last readings shown on LCD line 2 */
 
 extern Button_t btn_red;
 extern Button_t btn_green;
@@ -250,6 +275,10 @@ bool     Rtc_SetDate(uint8_t y, uint8_t mo, uint8_t d);
 bool     Rtc_SetWeekday(uint8_t wd);
 bool     Rtc_Get(DateTime_t *d);
 bool     Rtc_Setup(void);
+bool     Rtc_SetAll(const DateTime_t *d);
+int16_t  Rtc_LastRec(void);
+void     Rtc_Save(bool force);
+bool     Rtc_Restore(void);
 
 /* Sensors */
 int8_t   Dht_Exchange(uint8_t d[5]);
@@ -257,15 +286,19 @@ int8_t   DHT11_Read(int16_t *temperature, int16_t *humidity);
 uint8_t  BH1750_Init(void);
 uint8_t  BH1750_ReadLux(uint32_t *lux_x100);
 uint16_t Lux_Scale(uint32_t lux);
-#if HAVE_GPS
-bool     GPS_Read(char *out, size_t n);
-#endif
+void     Gps_Init(void);
+bool     Gps_ParseCoord(const char *s, char hemi, char *out, size_t n);
+int8_t   GPS_Read(char *out, size_t n);
+uint8_t  Gps_Split(const char *src, char *g, char **f, uint8_t max);
+bool     Gps_Time(DateTime_t *d);
+void     Gps_SyncClock(uint32_t now);   /* 1 = position, 0 = no fix yet, -1 = GPS not answering */
 #if HAVE_PRESSURE
 bool     Pressure_Read(int32_t *hpa);
 #endif
 
 /* SD card (SPI1) */
 uint8_t  spi_rw(uint8_t tx);
+void     Spi_SetPrescaler(uint32_t presc);
 void     sd_deselect(void);
 uint8_t  sd_wait_ready(uint32_t ms);
 uint8_t  sd_select(void);
@@ -279,6 +312,7 @@ bool     SD_Mount(void);
 void     SD_Unmount(void);
 void     SD_Fail(uint32_t flag);
 void     SD_Rotate(const char *tag, const char *path0);
+bool     SD_MakeDirs(const char *tag);
 bool     SD_AppendEntry(const LogEntry_t *e);
 void     Q_Push(const char *tag, const char *text);
 void     SD_Flush(void);
@@ -286,10 +320,12 @@ void     SD_LogLine(const char *tag, const char *text);
 
 /* Measurement */
 uint32_t Interval_ms(void);
-void     Measure_Start(uint32_t now);
-void     Measure_Finish(void);
-void     Measure_Step(void);
-void     Maintenance_Print(void);
+void     Sensors_Read(void);              /* reads every sensor switched on, once     */
+void     Data_Print(void);                /* [DATA] line on serial + LCD              */
+void     Log_Write(void);                 /* one measurement line -> serial + SD      */
+void     Boot_Checks(void);               /* the check list printed at start-up       */
+void     Led_Test(void);                  /* LED shows red, green, blue at start-up   */
+bool     Rtc_IsSet(void);
 
 /* Serial commands (CLI) */
 char    *Trim(char *s);
@@ -310,11 +346,14 @@ void     App_Task(void);
 void     App_Tick1ms(void);
 void     Tick_Init(void);
 void     App_Init(void);
+void     Ram_Fill(void);
+void     Ram_Print(void);
 
 /* Interrupt handlers */
 void     EXTI0_IRQHandler(void);
 void     USART2_IRQHandler(void);
 void     TIM6_DAC_IRQHandler(void);
+void     USART1_IRQHandler(void);
 #if EMPTY_MAIN_LOOP
 void     SWPMI1_IRQHandler(void);
 #endif
