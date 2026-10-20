@@ -9,12 +9,6 @@ void Mode_Set(SystemMode_t m)
   uint32_t now = HAL_GetTick();
 
   if (m == old) return;
-  if ((m == MODE_CONFIG && !USE_MODE_CONFIG) || (m == MODE_MAINTENANCE && !USE_MODE_MAINT) ||
-      (m == MODE_ECONOMY && !USE_MODE_ECO))
-  {
-    DBG("[MODE] %s desactive dans features.h\r\n", names[(int)m]);
-    return;
-  }
   meas.active = false;
   app_mode = m;
 
@@ -33,6 +27,6 @@ void Mode_Set(SystemMode_t m)
     next_measure_ms = now + 3000U;
   }
   DBG("[MODE] %s\r\n", names[(int)m]);
-  lcd_vals[0] = '\0';                           /* old readings are not shown in the new mode */
-  Lcd_Refresh(true);
+  Lcd_ShowLine(0, names[(int)m]);
+  Lcd_ShowLine(1, "");
 }

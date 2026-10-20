@@ -3,8 +3,8 @@
 
 void Measure_Finish(void)
 {
-  char t_s[16] = "NA", h_s[16] = "NA", l_s[28] = "NA", p_s[16] = "NA", g_s[40] = "NA";
-  char tag[12], line[LOG_LINE_MAX];
+  char t_s[16] = "NA", h_s[16] = "NA", l_s[28] = "NA", p_s[16] = "NA", g_s[32] = "NA";
+  char tag[8], line[LOG_LINE_MAX];
   bool data_err = false;
   DateTime_t dt;
   bool rtc_valid;
@@ -48,13 +48,13 @@ void Measure_Finish(void)
     }
   }
 #endif
-#if USE_GPS
+#if HAVE_GPS
   {
     static uint8_t eco_toggle = 0U;
     bool skip = (app_mode == MODE_ECONOMY) && ((eco_toggle++ & 1U) != 0U);   /* economy: every 2nd time */
     if (!skip)
     {
-      if (GPS_Read(g_s, sizeof(g_s)) < 0) Err_Set(ERR_GPS); else Err_Clear(ERR_GPS);   /* no fix = NA, no error */
+      if (GPS_Read(g_s, sizeof(g_s))) Err_Clear(ERR_GPS); else Err_Set(ERR_GPS);
     }
   }
 #endif
@@ -75,8 +75,7 @@ void Measure_Finish(void)
     if (h_s[0] != 'N') snprintf(hl, sizeof(hl), "%d%%", (int)meas.h);
     if (meas.lux_state == 1U) snprintf(ll, sizeof(ll), "%u", (unsigned)Lux_Scale(meas.lux_x100 / 100U));
     snprintf(lcd_s, sizeof(lcd_s), "%s %s L%s", tl, hl, ll);
-    snprintf(lcd_vals, sizeof(lcd_vals), "%.16s", lcd_s);
-    Lcd_Refresh(true);
+    Lcd_ShowLine(1, lcd_s);
   }
   DBG("[LOG] %s", line);
   SD_LogLine(tag, line);

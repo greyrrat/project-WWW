@@ -1,12 +1,10 @@
 #include "app.h"
-#include "features.h"
 
 /* All the slow work happens here, never inside a button/UART/timer interrupt */
 void App_Task(void)
 {
   uint32_t ev = Evt_Take();
   uint32_t now;
-
 
   if (ev & EVT_UART_LINE)
   {
@@ -34,16 +32,6 @@ void App_Task(void)
     case MODE_ECONOMY:
       if (!meas.active && (int32_t)(now - next_measure_ms) >= 0) Measure_Start(now);
       Measure_Step();
-      Live_Print();                              /* readings on LCD + serial every 3 s */
-      /* lines still waiting (SD error): try again every SD_RETRY_MS */
-      if (USE_SD && q_count > 0U && !meas.active && (int32_t)(now - next_sd_retry_ms) >= 0)
-      {
-        next_sd_retry_ms = now + SD_RETRY_MS;
-        DBG("[SD] Nouvel essai : %u ligne(s) en attente\r\n", (unsigned)q_count);
-        SD_Flush();
-      }
-      Gps_SyncClock(now);
-      Rtc_Save(false);                           /* date/time to flash every 5 min */
       break;
 
     case MODE_MAINTENANCE:
@@ -52,7 +40,6 @@ void App_Task(void)
         next_maint_ms = now + 2000U;
         Maintenance_Print();
       }
-      Gps_SyncClock(now);
       break;
 
     case MODE_CONFIG:
@@ -66,6 +53,4 @@ void App_Task(void)
     default:
       break;
   }
-
-  Lcd_Refresh(false);                            /* redraws the screen once per second */
 }

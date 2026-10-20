@@ -18,7 +18,6 @@ bool Lcd_Init(void)
     }
   }
   if (!found) return false;
-  lcd_ready = true;                                /* Lcd_Expander sets it false if a write fails */
 
   HAL_Delay(50);                                   /* the LCD needs time after power-up */
   for (uint8_t i = 0U; i < 4U; i++)
@@ -34,5 +33,5 @@ bool Lcd_Init(void)
   Lcd_WriteByte(0x01, 0);                          /* clear */
   HAL_Delay(2);
   Lcd_WriteByte(0x06, 0);                          /* cursor moves right */
-  return lcd_ready;
+  return true;
 }
